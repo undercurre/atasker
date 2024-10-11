@@ -25,6 +25,7 @@ specifiers:
   '@types/react': ^18.0.0
   '@vitejs/plugin-react': ^4.3.0
   babel-preset-taro: 4.0.6
+  dotenv: ^16.4.5
   eslint: ^8.57.0
   eslint-config-taro: 4.0.6
   eslint-plugin-react: ^7.34.1
@@ -68,6 +69,7 @@ devDependencies:
   '@types/react': 18.3.11
   '@vitejs/plugin-react': 4.3.2_vite@4.5.5
   babel-preset-taro: 4.0.6_ekvhzdg5ikwwnksr2qqclaj6wi
+  dotenv: 16.4.5
   eslint: 8.57.1
   eslint-config-taro: 4.0.6_bk5e6tcsb3xrb3gn2uq2e5sgxu
   eslint-plugin-react: 7.37.1_eslint@8.57.1
