@@ -1,11 +1,13 @@
+import Taro from "@tarojs/taro";
+
 function createLocalStorage() {
   function set(key: string, value: any) {
     const storageData = JSON.stringify(value);
-    window.localStorage.setItem(key, storageData);
+    setItem(key, storageData);
   }
 
-  function get(key: string) {
-    const json = window.localStorage.getItem(key);
+  async function get(key: string) {
+    const json = await getItem(key);
     if (json) {
       let storageData: string | null = null;
       let sourceData: any;
@@ -23,10 +25,10 @@ function createLocalStorage() {
   }
 
   function remove(key: string) {
-    window.localStorage.removeItem(key);
+    removeItem(key);
   }
   function clear() {
-    window.localStorage.clear();
+    clearItems();
   }
 
   return {
@@ -38,3 +40,43 @@ function createLocalStorage() {
 }
 
 export const localStg = createLocalStorage();
+
+function setItem(key: string, data: any) {
+  return new Promise((resolve, reject) => {
+    Taro.setStorage({
+      key: key,
+      data: data,
+      success: resolve,
+      fail: reject,
+    });
+  });
+}
+
+function getItem(key: string) {
+  return new Promise<string>((resolve, reject) => {
+    Taro.getStorage({
+      key: key,
+      success: (res) => resolve(res.data),
+      fail: reject,
+    });
+  });
+}
+
+function removeItem(key: string) {
+  return new Promise((resolve, reject) => {
+    Taro.removeStorage({
+      key: key,
+      success: resolve,
+      fail: reject,
+    });
+  });
+}
+
+function clearItems() {
+  return new Promise((resolve, reject) => {
+    Taro.clearStorage({
+      success: resolve,
+      fail: reject,
+    });
+  });
+}

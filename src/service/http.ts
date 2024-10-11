@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
 import { localStg } from "./local";
 
-interface BackendResultConfig {
+export interface BackendResultConfig {
   codeKey: string;
   dataKey: string;
   msgKey: string;
@@ -15,7 +15,7 @@ class ApiService {
 
   baseUrl: string;
 
-  private constructor(
+  constructor(
     baseUrl: string,
     backendConfig: {
       codeKey: string;
@@ -27,20 +27,6 @@ class ApiService {
     this.backendConfig = backendConfig;
     this.baseUrl = baseUrl;
     this.setupInterceptors();
-  }
-
-  public static getInstance(base: string): ApiService {
-    if (!ApiService.instance) {
-      const baseUrl = base;
-      const backendConfig: BackendResultConfig = {
-        codeKey: process.env.CODE_KEY as string,
-        dataKey: process.env.DATA_KEY as string,
-        msgKey: process.env.MSG_KEY as string,
-        successCode: parseInt(process.env.SUCCESS_CODE as string, 10),
-      };
-      ApiService.instance = new ApiService(baseUrl, backendConfig);
-    }
-    return ApiService.instance;
   }
 
   private setupInterceptors(): void {
