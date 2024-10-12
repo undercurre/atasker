@@ -52,13 +52,17 @@ function setItem(key: string, data: any) {
   });
 }
 
-function getItem(key: string) {
-  return new Promise<string>((resolve, reject) => {
-    Taro.getStorage({
-      key: key,
-      success: (res) => resolve(res.data),
-      fail: reject,
-    });
+function getItem(key: string): Promise<string | null> {
+  return new Promise<string | null>((resolve) => {
+    try {
+      Taro.getStorage({
+        key: key,
+        success: (res) => resolve(res.data),
+        fail: () => resolve(null), // 捕获错误并返回 null
+      });
+    } catch (e) {
+      resolve(null);
+    }
   });
 }
 

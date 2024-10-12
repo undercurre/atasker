@@ -1,30 +1,10 @@
 import Taro from "@tarojs/taro";
-import { localStg } from "./local";
-
-export interface BackendResultConfig {
-  codeKey: string;
-  dataKey: string;
-  msgKey: string;
-  successCode: number;
-}
+import { localStg } from "../storage/local";
 
 class ApiService {
-  private static instance: ApiService;
-
-  backendConfig: BackendResultConfig;
-
   baseUrl: string;
 
-  constructor(
-    baseUrl: string,
-    backendConfig: {
-      codeKey: string;
-      dataKey: string;
-      msgKey: string;
-      successCode: number;
-    }
-  ) {
-    this.backendConfig = backendConfig;
+  constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.setupInterceptors();
   }
@@ -34,28 +14,33 @@ class ApiService {
     Taro.addInterceptor(this.responseInterceptor);
   }
 
-  private requestInterceptor(chain: Taro.Chain) {
+  private async requestInterceptor(chain: Taro.Chain) {
     const requestParams = chain.requestParams;
+    const access_token = await localStg.get("token");
     // 可以在这里添加公共的请求头，token 等
     requestParams.header = {
       ...requestParams.header,
-      Authorization: `Bearer ${localStg.get("token")}`,
     };
+    if (access_token) {
+      requestParams.header.Authorization = `Bearer ${access_token}`;
+    }
     return chain.proceed(requestParams);
   }
 
   private responseInterceptor(chain: Taro.Chain) {
     return chain.proceed(chain.requestParams).then((response) => {
       const backend = response.data;
-      const { codeKey, dataKey, msgKey } = this.backendConfig;
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return backend[dataKey];
+        return backend["data"];
       } else {
-        if (backend[codeKey] === 401) {
+        if (backend["code"] === 401) {
           // 跳到login页面
+          Taro.redirectTo({
+            url: "/pages/login/index", // 替换为你的登录页面路径
+          });
         }
-        Taro.showToast({ title: backend[msgKey] || "操作失败", icon: "none" });
-        throw new Error(backend[msgKey] || "请求失败");
+        Taro.showToast({ title: backend["msg"] || "操作失败", icon: "none" });
+        throw new Error(backend["msg"] || "请求失败");
       }
     });
   }
@@ -69,7 +54,7 @@ class ApiService {
   ): Promise<any> {
     try {
       const response = await Taro.request({
-        url,
+        url: this.baseUrl + url,
         method,
         data,
         ...options,
@@ -82,19 +67,19 @@ class ApiService {
     }
   }
 
-  public get(
+  public get<T>(
     url: string,
     data?: any,
     options?: Taro.request.Option
-  ): Promise<any> {
+  ): Promise<T> {
     return this.request("GET", url, data, options);
   }
 
-  public post(
+  public post<T>(
     url: string,
     data?: any,
     options?: Taro.request.Option
-  ): Promise<any> {
+  ): Promise<T> {
     return this.request("POST", url, data, options);
   }
 

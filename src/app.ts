@@ -1,10 +1,7 @@
 import { PropsWithChildren } from "react";
 import { useLaunch } from "@tarojs/taro";
-import dotenv from "dotenv";
 
 import "./app.scss";
-
-dotenv.config();
 
 function App({ children }: PropsWithChildren<any>) {
   useLaunch(() => {
