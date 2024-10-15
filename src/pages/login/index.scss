@@ -1,0 +1,52 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.logo-section {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 300px;
+  height: 300px;
+}
+
+.title-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.app-title {
+  font-size: 48px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.app-subtitle {
+  font-size: 32px;
+  color: #666;
+}
+
+.login-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 100px;
+  background-color: #1aad19;
+  color: white;
+  font-size: 32px;
+  border-radius: 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.wx-icon {
+  width: 48px;
+  height: 48px;
+  margin-right: 20px;
+}

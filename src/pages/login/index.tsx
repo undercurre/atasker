@@ -1,8 +1,5 @@
-/* eslint-disable jsx-quotes */
-/* eslint-disable import/first */
-/* eslint-disable react-hooks/exhaustive-deps */
 import Taro from "@tarojs/taro";
-import { View, Button } from "@tarojs/components";
+import { View, Button, Image } from "@tarojs/components";
 import "./index.scss";
 import CryptoJS from "crypto-js";
 import * as forge from "node-forge";
@@ -72,8 +69,24 @@ export default function Login() {
   };
 
   return (
-    <View className="login">
-      <Button onClick={handleLogin}>微信登录</Button>
+    <View className="login-container">
+      <View className="logo-section">
+        <Image
+          className="logo"
+          src="https://raw.githubusercontent.com/undercurre/Image/refs/heads/main/atasker.png"
+        />
+      </View>
+      <View className="title-section">
+        <View className="app-title">欢迎使用我们的App</View>
+        <View className="app-subtitle">请使用微信登录继续</View>
+      </View>
+      <Button className="login-button" onClick={handleLogin}>
+        <Image
+          className="wx-icon"
+          src="https://raw.githubusercontent.com/undercurre/Image/refs/heads/main/weixin_white.png"
+        />
+        微信登录
+      </Button>
     </View>
   );
 }
