@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import * as forge from "node-forge";
 import { getPublicKey, login } from "../../apis/auth";
 import { useEffect } from "react";
+import { localStg } from "../../service/storage/local";
 
 export default function Login() {
   let pubKey = "";
@@ -57,10 +58,11 @@ export default function Login() {
         key: encryptedSymmetricKey,
         iv: ivBase64,
       });
-
-      if (res.access_token) {
+      if (res.accessToken) {
         Taro.showToast({ title: "登录成功", icon: "success" });
         // 处理登录成功后的逻辑，比如跳转页面
+        localStg.set("token", res.accessToken);
+        Taro.redirectTo({ url: "/pages/index/index" });
       }
     } catch (error) {
       Taro.showToast({ title: "登录失败", icon: "none" });

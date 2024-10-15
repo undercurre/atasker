@@ -16,7 +16,12 @@ class ApiService {
 
   private async requestInterceptor(chain: Taro.Chain) {
     const requestParams = chain.requestParams;
-    const access_token = await localStg.get("token");
+    let access_token = "";
+    try {
+      access_token = await localStg.get("token");
+    } catch (e) {
+      console.log("当前没有token");
+    }
     // 可以在这里添加公共的请求头，token 等
     requestParams.header = {
       ...requestParams.header,

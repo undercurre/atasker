@@ -4,8 +4,7 @@ const authApiService = new ApiService("http://localhost:3000");
 
 export function login(params: { code: string; key: string; iv: string }) {
   return authApiService.post<{
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
     user_id: string;
   }>("/auth/wechat-login", params);
 }
