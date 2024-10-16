@@ -9,6 +9,6 @@ export function login(params: { code: string; key: string; iv: string }) {
   }>("/auth/wechat-login", params);
 }
 
-export const getPublicKey = () => {
+export function getPublicKey() {
   return authApiService.get<{ publicKey: string }>("/auth/public-key");
-};
+}

@@ -10,10 +10,13 @@ import { localStg } from "../../service/storage/local";
 export default function Login() {
   let pubKey = "";
 
+  async function fetchPub() {
+    const pubKeyRes = await getPublicKey();
+    pubKey = pubKeyRes.publicKey;
+  }
+
   useEffect(() => {
-    getPublicKey().then((pubKeyRes) => {
-      pubKey = pubKeyRes.publicKey;
-    });
+    fetchPub();
   }, []);
 
   async function encryptDataWithPem(
@@ -62,7 +65,8 @@ export default function Login() {
         Taro.showToast({ title: "登录成功", icon: "success" });
         // 处理登录成功后的逻辑，比如跳转页面
         localStg.set("token", res.accessToken);
-        Taro.redirectTo({ url: "/pages/index/index" });
+        localStg.set("userId", res.user_id);
+        Taro.reLaunch({ url: "/pages/index/index" });
       }
     } catch (error) {
       Taro.showToast({ title: "登录失败", icon: "none" });
@@ -82,7 +86,7 @@ export default function Login() {
         <View className="app-title">欢迎使用我们的App</View>
         <View className="app-subtitle">请使用微信登录继续</View>
       </View>
-      <Button className="login-button" onClick={handleLogin}>
+      <Button className="login-button" onTap={handleLogin}>
         <Image
           className="wx-icon"
           src="https://raw.githubusercontent.com/undercurre/Image/refs/heads/main/weixin_white.png"
