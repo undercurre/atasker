@@ -1,8 +1,9 @@
 import Taro from "@tarojs/taro";
-import { View, Text, Button, Image } from "@tarojs/components";
-import { useEffect, useState } from "react";
+import { View, Text, Button, Image, Input } from "@tarojs/components";
+import { useEffect, useRef, useState } from "react";
 import "./index.scss";
 import { getUserInfo, WechatUserInfo } from "../../apis/user";
+import { localStg } from "../../service/storage/local";
 
 const Personal = () => {
   const [userInfo, setUserInfo] = useState<WechatUserInfo>({
@@ -31,17 +32,39 @@ const Personal = () => {
     fetchUserInfo();
   }, []);
 
-  const handleLogout = () => {
-    Taro.clearStorageSync();
+  const handleLogout = async () => {
+    await localStg.clear();
     Taro.reLaunch({ url: "/pages/login/index" });
   };
 
+  function onChooseAvatar(e) {
+    const { avatarUrl } = e.detail;
+    console.log(e);
+  }
+
+  const nicknameRef = useRef<HTMLInputElement | null>(null);
+
+  function onNickNameReview(e) {
+    console.log(nicknameRef.current);
+  }
+
   return (
     <View className="personal-container">
-      <View className="user-info">
-        <Image className="avatar" src={userInfo.avatar_url} />
-        <Text className="username">{userInfo.user.username}</Text>
-      </View>
+      <Button
+        className="user-info"
+        open-type="chooseAvatar"
+        onChooseAvatar={onChooseAvatar}
+      >
+        <Image className="avatar" src={userInfo.avatar_url}></Image>
+      </Button>
+      <Input
+        ref={nicknameRef}
+        type="nickname"
+        className="username"
+        value={userInfo.user.username}
+        placeholder="请输入昵称"
+        onBlur={onNickNameReview}
+      />
       <View className="user-details">
         <View className="detail-item">
           <Text className="label">Email: </Text>

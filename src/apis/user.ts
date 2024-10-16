@@ -1,5 +1,6 @@
 import { localStg } from "../service/storage/local";
 import ApiService from "../service/request/http";
+import Taro from "@tarojs/taro";
 
 const userApiService = new ApiService("http://localhost:3003");
 
@@ -21,6 +22,5 @@ export interface WechatUserInfo {
 
 export async function getUserInfo() {
   const userId = await localStg.get("userId");
-  console.log(userId);
   return userApiService.get<WechatUserInfo>(`/wechat_users/${userId}`);
 }

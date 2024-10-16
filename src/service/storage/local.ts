@@ -9,7 +9,7 @@ function createLocalStorage() {
   async function get(key: string) {
     const json = await getItem(key);
     if (json) {
-      let storageData: string | null = null;
+      let storageData: string | null = json;
       let sourceData: any;
       try {
         if (storageData) sourceData = JSON.parse(storageData);
@@ -57,7 +57,9 @@ function getItem(key: string): Promise<string | null> {
     try {
       Taro.getStorage({
         key: key,
-        success: (res) => resolve(res.data),
+        success: (res) => {
+          resolve(res.data);
+        },
         fail: () => resolve(null), // 捕获错误并返回 null
       });
     } catch (e) {
