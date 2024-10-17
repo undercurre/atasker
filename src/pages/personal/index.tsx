@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import { View, Text, Button, Image, Input } from "@tarojs/components";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.scss";
 import { getUserInfo, WechatUserInfo } from "../../apis/user";
 import { localStg } from "../../service/storage/local";
