@@ -39,32 +39,45 @@ const Personal = () => {
 
   function onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
-    console.log(e);
+    setUserInfo((preState) => {
+      return {
+        ...preState,
+        avatar_url: avatarUrl,
+      };
+    });
   }
 
-  const nicknameRef = useRef<HTMLInputElement | null>(null);
-
   function onNickNameReview(e) {
-    console.log(nicknameRef.current);
+    const { value } = e.detail;
+    setUserInfo((preState) => {
+      return {
+        ...preState,
+        user: {
+          ...preState.user,
+          username: value,
+        },
+      };
+    });
   }
 
   return (
     <View className="personal-container">
-      <Button
-        className="user-info"
-        open-type="chooseAvatar"
-        onChooseAvatar={onChooseAvatar}
-      >
-        <Image className="avatar" src={userInfo.avatar_url}></Image>
-      </Button>
-      <Input
-        ref={nicknameRef}
-        type="nickname"
-        className="username"
-        value={userInfo.user.username}
-        placeholder="请输入昵称"
-        onBlur={onNickNameReview}
-      />
+      <View className="user-info">
+        <Button
+          className="avatar_wrap"
+          open-type="chooseAvatar"
+          onChooseAvatar={onChooseAvatar}
+        >
+          <Image className="avatar" src={userInfo.avatar_url}></Image>
+        </Button>
+        <Input
+          type="nickname"
+          className="username"
+          value={userInfo.user.username}
+          placeholder="请输入昵称"
+          onInput={onNickNameReview}
+        />
+      </View>
       <View className="user-details">
         <View className="detail-item">
           <Text className="label">Email: </Text>

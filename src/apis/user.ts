@@ -20,7 +20,22 @@ export interface WechatUserInfo {
   };
 }
 
+export interface updateUserInfoParams {
+  nickname?: string;
+  avatar_url?: string;
+  user: {
+    id: string;
+    phone?: string;
+  };
+}
+
 export async function getUserInfo() {
   const userId = await localStg.get("userId");
   return userApiService.get<WechatUserInfo>(`/wechat_users/${userId}`);
+}
+
+export async function updateUserInfo(data: updateUserInfoParams) {
+  const userId = await localStg.get("userId");
+  data.user.id = userId;
+  return userApiService.post<WechatUserInfo>("/wechat_users", data);
 }
