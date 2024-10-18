@@ -2,35 +2,23 @@ import Taro from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import { View, Text, Button, Textarea, Picker } from "@tarojs/components";
 import "./index.scss";
+import { getQuestionList, Question } from "@/apis/question";
 
-interface Question {
-  id: number;
-  title: string;
-  description: string;
+const [questions, setQuestionList] = useState<Question[]>([]);
+
+async function fetchQuestion() {
+  const questionListRes = await getQuestionList();
+  setQuestionList(() => {
+    return [...questionListRes];
+  });
 }
-
-const questions: Question[] = [
-  {
-    id: 1,
-    title: "Two Sum",
-    description:
-      "Given an array of integers, return indices of the two numbers such that they add up to a specific target.",
-  },
-  {
-    id: 2,
-    title: "Reverse String",
-    description:
-      "Write a function that reverses a string. The input string is given as an array of characters.",
-  },
-  // 添加更多问题
-];
 
 const QuestionPage = () => {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
     null
   );
   const [answer, setAnswer] = useState<string>("");
-  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [questionId, setQuestionId] = useState<number>(0);
 
   useEffect(() => {
     if (questions.length > 0) {
@@ -40,8 +28,11 @@ const QuestionPage = () => {
 
   const handleQuestionChange = (e) => {
     const index = e.detail.value;
-    setQuestionIndex(index);
-    setSelectedQuestion(questions[index]);
+    setQuestionId(index);
+    const findedQuestion = questions.find((item) => item.id);
+    if (findedQuestion) {
+      setSelectedQuestion(findedQuestion);
+    }
   };
 
   const handleAnswerChange = (e) => {

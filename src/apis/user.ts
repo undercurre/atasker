@@ -1,6 +1,5 @@
 import { localStg } from "../service/storage/local";
 import ApiService from "../service/request/http";
-import Taro from "@tarojs/taro";
 
 const userApiService = new ApiService("http://localhost:3003");
 
