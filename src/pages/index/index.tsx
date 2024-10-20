@@ -2,23 +2,28 @@ import Taro from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import { View, Text, Button, Textarea, Picker } from "@tarojs/components";
 import "./index.scss";
-import { getQuestionList, Question } from "@/apis/question";
-
-const [questions, setQuestionList] = useState<Question[]>([]);
-
-async function fetchQuestion() {
-  const questionListRes = await getQuestionList();
-  setQuestionList(() => {
-    return [...questionListRes];
-  });
-}
+import { createAnswer, getQuestionList, Question } from "../../apis/question";
+import { localStg } from "../../service/storage/local";
 
 const QuestionPage = () => {
+  const [questions, setQuestionList] = useState<Question[]>([]);
+
+  async function fetchQuestion() {
+    const questionListRes = await getQuestionList();
+    setQuestionList(() => {
+      return [...questionListRes];
+    });
+  }
+
+  useEffect(() => {
+    fetchQuestion();
+  }, []);
+
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
     null
   );
   const [answer, setAnswer] = useState<string>("");
-  const [questionId, setQuestionId] = useState<number>(0);
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
 
   useEffect(() => {
     if (questions.length > 0) {
@@ -28,32 +33,40 @@ const QuestionPage = () => {
 
   const handleQuestionChange = (e) => {
     const index = e.detail.value;
-    setQuestionId(index);
-    const findedQuestion = questions.find((item) => item.id);
-    if (findedQuestion) {
-      setSelectedQuestion(findedQuestion);
-    }
+    setQuestionIndex(index);
+    setSelectedQuestion(questions[index]);
   };
 
   const handleAnswerChange = (e) => {
     setAnswer(e.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedQuestion) {
+      const userId = await localStg.get("userId");
+      const answerParams = {
+        user: {
+          id: userId,
+        },
+        question: {
+          id: questions[questionIndex].id,
+        },
+        userAnswer: answer,
+      };
+      await createAnswer(answerParams);
       Taro.showToast({
         title: "Answer submitted!",
         icon: "success",
         duration: 2000,
       });
-      console.log(`Question: ${selectedQuestion.title}, Answer: ${answer}`);
+      console.log(`Question: ${selectedQuestion.content}, Answer: ${answer}`);
     }
   };
 
   return (
     <View className="question-page">
       <View className="header">
-        <Text className="title">Coding Interview Q&A</Text>
+        <Text className="title">Interview Exercise Q&A</Text>
         <Text className="description">
           Select a question from the list and provide your answer.
         </Text>
@@ -61,22 +74,19 @@ const QuestionPage = () => {
 
       <Picker
         mode="selector"
-        range={questions.map((q) => q.title)}
+        range={questions.map((q) => q.content)}
         onChange={handleQuestionChange}
       >
         <View className="picker">
           <Text>
-            {selectedQuestion ? selectedQuestion.title : "Select a question"}
+            {selectedQuestion ? selectedQuestion.content : "Select a question"}
           </Text>
         </View>
       </Picker>
 
       {selectedQuestion && (
         <View className="question-detail">
-          <Text className="question-title">{selectedQuestion.title}</Text>
-          <Text className="question-description">
-            {selectedQuestion.description}
-          </Text>
+          <Text className="question-title">Q: {selectedQuestion.content}</Text>
         </View>
       )}
 
