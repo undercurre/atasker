@@ -34,7 +34,11 @@ const QuestionPage = () => {
   const handleQuestionChange = (e) => {
     const index = e.detail.value;
     setQuestionIndex(index);
-    setSelectedQuestion(questions[index]);
+    setSelectedQuestion(() => {
+      return {
+        ...questions[index],
+      };
+    });
   };
 
   const handleAnswerChange = (e) => {
@@ -61,6 +65,21 @@ const QuestionPage = () => {
       });
       console.log(`Question: ${selectedQuestion.content}, Answer: ${answer}`);
     }
+  };
+
+  const handleReset = async () => {
+    setQuestionIndex(0);
+    setAnswer("");
+    setSelectedQuestion(null);
+    setIsShowAnswer(false);
+  };
+
+  const [isShowAnswer, setIsShowAnswer] = useState(false);
+
+  const handleShowAnswer = async () => {
+    setIsShowAnswer((preState) => {
+      return !preState;
+    });
   };
 
   return (
@@ -100,6 +119,18 @@ const QuestionPage = () => {
       <Button className="submit-button" onClick={handleSubmit}>
         Submit Answer
       </Button>
+      <Button className="reset-button" onClick={handleReset}>
+        Reset
+      </Button>
+      <Button className="answer-button" onClick={handleShowAnswer}>
+        Show Answer
+      </Button>
+
+      {selectedQuestion && isShowAnswer && (
+        <View className="question-detail">
+          <Text className="question-title">A: {selectedQuestion.answer}</Text>
+        </View>
+      )}
     </View>
   );
 };

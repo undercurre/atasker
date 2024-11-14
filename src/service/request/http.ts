@@ -1,4 +1,4 @@
-import Taro from "@tarojs/taro";
+import Taro, { addInterceptor } from "@tarojs/taro";
 import { localStg } from "../storage/local";
 
 class ApiService {
